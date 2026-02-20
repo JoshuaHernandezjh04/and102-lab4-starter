@@ -15,10 +15,13 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Campgrounds"
         tools:targetApi="31">
-        <!-- Campground Detail Activity -->
-        <activity android:name=".DetailActivity"
-            android:exported="true" />
-        <!-- Campgrounds Main Activity -->
+
+        <!-- Detail Screen -->
+        <activity
+            android:name=".DetailActivity"
+            android:exported="false" />
+
+        <!-- Main Screen -->
         <activity
             android:name=".MainActivity"
             android:exported="true">
@@ -27,6 +30,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
     </application>
 
 </manifest>

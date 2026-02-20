@@ -1,15 +1,50 @@
 package com.codepath.campgrounds
 
 import android.content.Context
+import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
+import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 
-private const val TAG = "CampgroundAdapter"
+const val CAMPGROUND_EXTRA = "CAMPGROUND_EXTRA"
 
-class CampgroundAdapter(private val context: Context) :
-    RecyclerView.Adapter<CampgroundAdapter.ViewHolder>() {
+class CampgroundAdapter(
+    private val context: Context,
+    private val campgrounds: List<Campground>
+) : RecyclerView.Adapter<CampgroundAdapter.ViewHolder>() {
+
+    inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView), View.OnClickListener {
+        private val nameTextView = itemView.findViewById<TextView>(R.id.campgroundName)
+        private val descriptionTextView = itemView.findViewById<TextView>(R.id.campgroundDescription)
+        private val locationTextView = itemView.findViewById<TextView>(R.id.campgroundLocation)
+        private val imageView = itemView.findViewById<ImageView>(R.id.campgroundImage)
+
+        init {
+            itemView.setOnClickListener(this)
+        }
+
+        fun bind(campground: Campground) {
+            nameTextView.text = campground.name ?: ""
+            descriptionTextView.text = campground.description ?: ""
+            locationTextView.text = campground.latLong ?: ""
+
+            Glide.with(context)
+                .load(campground.imageUrl)
+                .centerCrop()
+                .into(imageView)
+        }
+
+        override fun onClick(v: View?) {
+            val campground = campgrounds[absoluteAdapterPosition]
+            val intent = Intent(context, DetailActivity::class.java)
+            intent.putExtra(CAMPGROUND_EXTRA, campground)
+            context.startActivity(intent)
+        }
+    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(context).inflate(R.layout.item_campground, parent, false)
@@ -17,31 +52,8 @@ class CampgroundAdapter(private val context: Context) :
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        // TODO: Get the individual campground and bind to holder
+        holder.bind(campgrounds[position])
     }
 
-    override fun getItemCount() = 0 // Fix me!
-
-    inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView),
-        View.OnClickListener {
-
-        // TODO: Create member variables for any view that will be set
-
-        init {
-            itemView.setOnClickListener(this)
-        }
-
-        fun bind(campground: Campground) {
-            // TODO: Set item views based on views and data model
-
-        }
-
-        override fun onClick(v: View?) {
-            // TODO: Get selected campground
-
-
-            // TODO: Navigate to Details screen and pass selected campground
-
-        }
-    }
+    override fun getItemCount(): Int = campgrounds.size
 }
